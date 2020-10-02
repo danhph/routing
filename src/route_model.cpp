@@ -1,5 +1,6 @@
 #include "route_model.h"
 #include <iostream>
+#include <pugixml.hpp>
 
 RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml)
 {
@@ -43,7 +44,20 @@ RouteModel::Node *RouteModel::Node::FindNeighbor(std::vector<int> node_indices)
 void RouteModel::Node::FindNeighbors()
 {
     for (auto& road : parent_model->node_to_road[this->index]) {
-        Node *new_neighbor = this->FindNeighbor(parent_model->Ways()[road->way].nodes);
+    	auto way = parent_model->Ways()[road->way];
+    	auto road_node_indices = way.nodes;
+		if (way.oneway) {
+			while (true) {
+				auto idx = road_node_indices.front();
+				auto node = parent_model->SNodes()[idx];
+				if (this->distance(node) == 0)
+					break;
+				road_node_indices.erase(road_node_indices.begin());
+			}
+		}
+    	
+        // Node *new_neighbor = this->FindNeighbor(parent_model->Ways()[road->way].nodes);
+        Node *new_neighbor = this->FindNeighbor(road_node_indices);
         if (new_neighbor) {
             this->neighbors.push_back(new_neighbor);
         }

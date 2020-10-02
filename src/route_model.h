@@ -18,10 +18,15 @@ class RouteModel : public Model {
         std::vector<Node*> neighbors;
 
         // returns the euclidean distance between the current node and the
-	// node passed in to the function
-	float distance (Node other) const {
-            return std::sqrt(std::pow((x - other.x), 2) + std::pow((y - other.y), 2));
-        }
+		// node passed in to the function
+		float distance (Node other) const {
+			auto weight = GetZoneWeight(zone_id());
+	        return weight * std::sqrt(std::pow((x - other.x), 2) + std::pow((y - other.y), 2));
+	    }
+
+    	int zone_id() const {
+    		return std::floor(x * 10) + 10 * std::floor(y * 10);
+    	}
 
         Node(){}
         Node(int idx, RouteModel *search_model, Model::Node node) : Model::Node(node), parent_model(search_model), index(idx) {}
@@ -31,6 +36,7 @@ class RouteModel : public Model {
         int index;
         RouteModel *parent_model = nullptr;
         Node *FindNeighbor(std::vector<int> node_indices);
+    	
     };
     
     RouteModel(const std::vector<std::byte> &xml);
@@ -39,10 +45,11 @@ class RouteModel : public Model {
     Node &FindClosestNode(float x, float y);
 
     // This variable will store the path that is found by the A* search.
-    std::vector<Node> path;
+    std::vector<Node> path;	
 
   private:
     std::vector<Node> m_Nodes;
     std::unordered_map<int, std::vector<const Model::Road*>> node_to_road;
     void CreateNodeToRoadHashmap();
+
 };

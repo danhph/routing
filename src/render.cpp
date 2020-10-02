@@ -26,23 +26,49 @@ void Render::Display( io2d::output_surface &surface )
     DrawWater(surface);    
     DrawRailways(surface);
     DrawHighways(surface);    
-    DrawBuildings(surface);  
+    DrawBuildings(surface);
+	
     DrawPath(surface);
     DrawStartPosition(surface);
     DrawEndPosition(surface);
+
+	DrawGrid(surface);
+}
+
+void Render::DrawGrid(io2d::output_surface &surface) const
+{
+	io2d::brush foreBrush{ io2d::rgba_color::grey}; 
+    float width = 0.3f;
+
+	for (int i = 1; i < 10; i++) {
+		auto pb = io2d::path_builder{};
+	    pb.matrix(m_Matrix);
+		auto x = i * 0.1f;
+		pb.new_figure(io2d::point_2d(x, 0.0f));
+		pb.line(io2d::point_2d(x, 1.0f));
+		surface.stroke(foreBrush, io2d::interpreted_path{pb}, std::nullopt, io2d::stroke_props{width});	
+	}
+
+	for (int i = 1; i < 10; i++) {
+		auto pb = io2d::path_builder{};
+	    pb.matrix(m_Matrix);
+		auto y = i * 0.1f;
+		pb.new_figure(io2d::point_2d(0.0f, y));
+		pb.line(io2d::point_2d(1.0f, y));
+		surface.stroke(foreBrush, io2d::interpreted_path{pb}, std::nullopt, io2d::stroke_props{width});	
+	}
 }
 
 void Render::DrawPath(io2d::output_surface &surface) const{
     io2d::render_props aliased{ io2d::antialias::none };
-    io2d::brush foreBrush{ io2d::rgba_color::red}; 
+    io2d::brush foreBrush{ io2d::rgba_color::dark_green }; 
     float width = 5.0f;
     surface.stroke(foreBrush, PathLine(), std::nullopt, io2d::stroke_props{width});
-
 }
 
 void Render::DrawEndPosition(io2d::output_surface &surface) const{
     io2d::render_props aliased{ io2d::antialias::none };
-    io2d::brush foreBrush{ io2d::rgba_color::red };
+    io2d::brush foreBrush{ io2d::rgba_color::orange };
 
     auto pb = io2d::path_builder{}; 
     pb.matrix(m_Matrix);
@@ -62,7 +88,7 @@ void Render::DrawEndPosition(io2d::output_surface &surface) const{
 
 void Render::DrawStartPosition(io2d::output_surface &surface) const{
     io2d::render_props aliased{ io2d::antialias::none };
-    io2d::brush foreBrush{ io2d::rgba_color::green };
+    io2d::brush foreBrush{ io2d::rgba_color::dark_red };
 
     auto pb = io2d::path_builder{}; 
     pb.matrix(m_Matrix);
@@ -147,9 +173,8 @@ io2d::interpreted_path Render::PathLine() const
     pb.new_figure( ToPoint2D( m_Model.path[0]));
 
     for( int i=1; i< m_Model.path.size();i++ )
-        pb.line( ToPoint2D(m_Model.path[i])); 
+	    pb.line(ToPoint2D(m_Model.path[i]));
 
-      
     return io2d::interpreted_path{pb};
 }
 

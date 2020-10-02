@@ -14,6 +14,7 @@ public:
     };
     
     struct Way {
+    	bool oneway;
         std::vector<int> nodes;
     };
     
@@ -43,7 +44,7 @@ public:
         enum Type { Invalid, Commercial, Construction, Grass, Forest, Industrial, Railway, Residential };
         Type type;
     };
-    
+
     Model( const std::vector<std::byte> &xml );
     
     auto MetricScale() const noexcept { return m_MetricScale; }    
@@ -56,11 +57,11 @@ public:
     auto &Waters() const noexcept { return m_Waters; }
     auto &Landuses() const noexcept { return m_Landuses; }
     auto &Railways() const noexcept { return m_Railways; }
-    
+	
 private:
     void AdjustCoordinates();
     void BuildRings( Multipolygon &mp );
-    void LoadData(const std::vector<std::byte> &xml);
+    void LoadData(const std::vector<std::byte> &xml);    
     
     std::vector<Node> m_Nodes;
     std::vector<Way> m_Ways;
@@ -76,4 +77,11 @@ private:
     double m_MinLon = 0.;
     double m_MaxLon = 0.;
     double m_MetricScale = 1.f;
+	
+public:
+	static void LoadTrafficData(const std::vector<std::byte> &xml);
+	static float GetZoneWeight(int id);
+
+private:
+	static std::unordered_map<int, float> m_Zones;
 };

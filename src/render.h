@@ -25,6 +25,8 @@ private:
     void DrawStartPosition(io2d::output_surface &surface) const;
     void DrawEndPosition(io2d::output_surface &surface) const;
     void DrawPath(io2d::output_surface &surface) const;
+    void DrawGrid(io2d::output_surface &surface) const;
+	
     io2d::interpreted_path PathFromWay(const Model::Way &way) const;
     io2d::interpreted_path PathFromMP(const Model::Multipolygon &mp) const;
     io2d::interpreted_path PathLine() const;

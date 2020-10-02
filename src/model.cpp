@@ -69,7 +69,7 @@ void Model::LoadData(const std::vector<std::byte> &xml)
     std::unordered_map<std::string, int> node_id_to_num;
     for( const auto &node: doc.select_nodes("/osm/node") ) {
         node_id_to_num[node.node().attribute("id").as_string()] = (int)m_Nodes.size();
-        m_Nodes.emplace_back();        
+        m_Nodes.emplace_back();
         m_Nodes.back().y = atof(node.node().attribute("lat").as_string());
         m_Nodes.back().x = atof(node.node().attribute("lon").as_string());
     }
@@ -125,13 +125,16 @@ void Model::LoadData(const std::vector<std::byte> &xml)
                         m_Landuses.back().type = landuse_type;
                     }                    
                 }
+				if( category == "oneway" && type.find("yes") != string_t::npos){
+					new_way.oneway = true;
+				}            	
             }
         }
     }
     
     for( const auto &relation: doc.select_nodes("/osm/relation") ) {
         auto node = relation.node();
-        auto noode_id = std::string_view{node.attribute("id").as_string()};
+        auto node_id = std::string_view{node.attribute("id").as_string()};
         std::vector<int> outer, inner;
         auto commit = [&](Multipolygon &mp) {
             mp.outer = std::move(outer);
@@ -278,4 +281,29 @@ void Model::BuildRings( Multipolygon &mp )
 
     process(mp.outer);
     process(mp.inner);
+}
+
+std::unordered_map<int, float> Model::m_Zones;
+
+void Model::LoadTrafficData(const std::vector<std::byte> &xml)
+{
+	using namespace pugi;
+
+    xml_document doc;
+    if( !doc.load_buffer(xml.data(), xml.size()) )
+        throw std::logic_error("failed to parse the xml traffic file");
+
+	for(auto node: doc.select_nodes("/traffic/zone") )
+	{
+		auto zone_id = node.node().attribute("id").as_int();
+		auto zone_weight = node.node().attribute("weight").as_float();
+		m_Zones[zone_id] = zone_weight;
+	}
+}
+
+float Model::GetZoneWeight(int id)
+{
+    if (m_Zones.find(id) != m_Zones.end())
+		return m_Zones[id];
+    return 1.0;
 }

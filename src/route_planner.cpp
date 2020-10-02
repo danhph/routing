@@ -49,7 +49,6 @@ void RoutePlanner::AStarSearch()
         // check if the current node is the end node
         if (current_node->distance(*end_node) == 0) {
             m_Model.path = ConstructFinalPath(current_node);
-            return;
         } else {
             AddNeighbors(current_node);
         }

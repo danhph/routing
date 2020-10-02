@@ -29,26 +29,17 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 
 int main(int argc, const char **argv)
 {    
-    std::string osm_data_file = "";
-    if( argc > 1 ) {
-        for( int i = 1; i < argc; ++i )
-            if( std::string_view{argv[i]} == "-f" && ++i < argc )
-                osm_data_file = argv[i];
+    std::string osm_data_file = "map.osm";
+    std::string traffic_data_file = "traffic.xml";
+
+    std::cout << "Reading OpenStreetMap data from the following file: " <<  osm_data_file << std::endl;
+    auto data = ReadFile(osm_data_file);
+    if( !data )
+    {
+        std::cout << "Failed to read." << std::endl;
+        return 1;
     }
-    else {
-        std::cout << "Usage: [executable] [-f filename.osm]" << std::endl;    
-    }
-    
-    std::vector<std::byte> osm_data;
- 
-    if( osm_data.empty() && !osm_data_file.empty() ) {
-        std::cout << "Reading OpenStreetMap data from the following file: " <<  osm_data_file << std::endl;
-        auto data = ReadFile(osm_data_file);
-        if( !data )
-            std::cout << "Failed to read." << std::endl;
-        else
-            osm_data = std::move(*data);
-    }
+    std::vector<std::byte> osm_data = std::move(*data);
     
     // start and end node
     float start_x, start_y, end_x, end_y;
@@ -63,13 +54,25 @@ int main(int argc, const char **argv)
     // std::cin >> end_x;
     // std::cout << "Enter a value for end y between 0-100: ";
     // std::cin >> end_y;
-	start_x = 22;
-	start_y = 25;
-	end_x = 63;
-	end_y = 87;
+	start_x = 16;
+	start_y = 92;
+	
+	// end_x = 63;
+	// end_y = 87;
+	end_x = 67;
+	end_y = 53;
 
     // Build Model.
     RouteModel model{osm_data};
+
+	// Load traffic data 
+    std::cout << "Reading traffic data from the following file: " <<  traffic_data_file << std::endl;
+    data = ReadFile(traffic_data_file);
+    if(data)
+    {
+        std::vector<std::byte> traffic_data = std::move(*data);
+    	model.LoadTrafficData(traffic_data);
+    }
 
     // Perform search and render results.
     RoutePlanner route_planner{model, start_x, start_y, end_x, end_y};
