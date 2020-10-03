@@ -9,6 +9,6 @@ Result without traffic infomation:
 ![](./without_traffic.png)
 
 
-Result with traffic infomation (traffic jam in zone 55, 546, 65 and 66):
+Result with traffic infomation (traffic jam in zone 55, 56, 65 and 66):
 
 ![](./with_traffic.png)
