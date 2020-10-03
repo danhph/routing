@@ -1,8 +1,8 @@
 # Routing
 
 ## 1. Setup environment
-
-- Install [vcpkg - C++ Library Manager](https://github.com/microsoft/vcpkg
+- Install [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/) with C++ Desktop components
+- Install [vcpkg - C++ Library Manager](https://github.com/microsoft/vcpkg)
 - Install required packages:
 
 ```
