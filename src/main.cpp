@@ -46,21 +46,18 @@ int main(int argc, const char **argv)
 
     // get the user input for start node: (start_x, start_y) and end node: (end_x, end_y)
     std::cout << "The map coordinates start at (0,0) in the lower left corner and end at (100,100) ine the upper right corner."<<std::endl;
-    // std::cout << "Enter a value for start x between 0-100: ";
-    // std::cin >> start_x;
-    // std::cout << "Enter a value for start y between 0-100: ";
-    // std::cin >> start_y;
-    // std::cout << "Enter a value for end x between 0-100: ";
-    // std::cin >> end_x;
-    // std::cout << "Enter a value for end y between 0-100: ";
-    // std::cin >> end_y;
-	start_x = 16;
-	start_y = 92;
-	
-	// end_x = 63;
-	// end_y = 87;
-	end_x = 67;
-	end_y = 53;
+    std::cout << "Enter a value for start x between 0-100: ";
+    std::cin >> start_x;
+    std::cout << "Enter a value for start y between 0-100: ";
+    std::cin >> start_y;
+    std::cout << "Enter a value for end x between 0-100: ";
+    std::cin >> end_x;
+    std::cout << "Enter a value for end y between 0-100: ";
+    std::cin >> end_y;
+	// start_x = 16;
+	// start_y = 92;
+	// end_x = 67;
+	// end_y = 53;
 
     // Build Model.
     RouteModel model{osm_data};
